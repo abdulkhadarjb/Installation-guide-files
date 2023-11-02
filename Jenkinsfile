@@ -46,30 +46,30 @@ pipeline {
             steps{
                   nexusArtifactUploader artifacts: [
                        [
-                            artifactId: 'myweb', 
+                            artifactId: 'vprofile', 
                             classifier: '', 
-                            file: "target/myweb-8.2.0.war", 
+                            file: "target/vprofile-v2.war", 
                             type: 'war'
                        ]
                   ], 
                   credentialsId: 'nexus3', 
-                  groupId: 'in.javahome', 
+                  groupId: 'com.visualpathi', 
                   nexusUrl: '172.31.40.8:8081', 
                   nexusVersion: 'nexus3', 
                   protocol: 'http', 
-                  repository: 'sample-releases', 
-                  version: '8.2.0'  
+                  repository: 'vr-releases', 
+                  version: 'v2'  
               }
             }
         stage("deploy-dev"){
             steps{
-                sshagent(['tomcat-new']) {
+                sshagent(['tomcat-credential']) {
                 sh """
-                    scp -o StrictHostKeyChecking=no target/myweb-8.2.0.war  ec2-user@172.31.41.172:/home/ec2-user/apache-tomcat-9.0.64/webapps/
+                    scp -o StrictHostKeyChecking=no target/vprofile-v2.war  ec2-user@172.31.41.172:/opt/tomcat/webapps/
                     
-                    ssh ec2-user@172.31.41.172 /home/ec2-user/apache-tomcat-9.0.64/bin/shutdown.sh
+                    ssh ec2-user@172.31.41.172 /opt/tomcat/bin/shutdown.sh
                     
-                    ssh ec2-user@172.31.41.172 /home/ec2-user/apache-tomcat-9.0.64/bin/startup.sh
+                    ssh ec2-user@172.31.41.172 /opt/tomcat/bin/startup.sh
                 
                 """
             }
