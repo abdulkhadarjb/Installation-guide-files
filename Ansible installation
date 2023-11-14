@@ -1,0 +1,83 @@
+Ansible installation on linux
+===========================================
+when lunch instance select amazon linux-2 AMI for ansible easy installation
+follow commands
+
+sudo amazon-linux-extars ansible2 -y
+
+yum install ansible >> check ansible version you will get conf and hosts
+ 
+ sudo vi /etc/ansible/hosts >>> give private IP address at which you want to control come out
+
+ sudo vi /etc/ansible/ansible.cfg >>> (uncomment)remove "#" for inventory and sudo_user permissions
+
+ useradd ansible
+ passwd ansible
+set password same for  all >> this step while do all instance where you practice
+
+ sudo visudo >>> give below root --- ansible AlL=(All) NOPASSWD:AlL
+
+ sudo etc/ssh/sshd_config
+below check give password yes
+ -------------------------------------------------------------------
+ lunch other Ec2-instance for checking ansible code working nodes 
+ 
+ useradd ansible
+ passwd ansible
+ 
+ visudo>> ALL=(ALL) NOPASSWD:AlL
+ 
+ vi /etc/ssh/sshd_cfg >>> give password-yes
+ try above both commands in your nodes 
+ 
+ after retsart sshd connection in all instance 
+ systemctl restart sshd
+ systemctl status sshd >> status:running
+ 
+ ======================================
+ 
+ su - ansible >>> in all you lunched instance
+ 
+ ssh-keygen
+ ssh-copy-id ansible@locathost(ansible ip address)
+ 
+ ssh-copy-id ansible@localhost (or public id )
+ ssh 'ansible@ip address which you added in above commands'
+ 
+ hostname -i >>> you will get node ip adress means it was added 
+ type exit
+ 
+ do this 3 steps for ansible instace
+ 
+ ======================================================
+ Run this commands in ansible instance > when you want access other instance enter instance public id or group name instead of localhost
+ Ahod commands
+-----------------
+ ansible localhost(node name or group name ) -ba "command" 
+ ansible localhost -m copy "src=file path dest=where to paste path"
+ 
+ Module Commands
+ ----------------
+ ansible localhost -b -m yum -a "pkg=git state=present,latest,version no"
+ ansible localhost -b -m service -a "name=git state=started,restarted,absent"
+
+
+ ansible localhost -b -m user -a "name=abdul"
+
+playbooks write
+============================================
+only yml files access playbooks so we need write code in yml file system
+if you don't know how to write yml check in browser
+
+
+every playbook start with --- next at end of filename abdul.yml(.yml was mandatory for recognize yml file)
+
+---
+- name: install git
+  hosts: your server name (menstioned  in ansible/hosts)
+  become: true
+  tasks:
+  - name: install apache2
+    yum: 
+      name: git
+      state: present( you can give your requried version)
